@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   is_builtin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 17:26:54 by anbellar          #+#    #+#             */
-/*   Updated: 2025/10/15 17:15:42 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 15:40:41 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	dispatch_builtin(t_cmd *cmd, t_var **env_list, int last_status)
 	// if (ft_strcmp(name, "echo") == 0)
 	// 	return (ft_echo(cmd));
 	if (ft_strcmp(name, "exit") == 0)
-		return (ft_exit(cmd, last_status));
+		return (ft_exit(cmd, env_list, last_status));
 	return (127);
 }
 

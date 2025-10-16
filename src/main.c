@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 14:00:51 by sle-bail          #+#    #+#             */
-/*   Updated: 2025/10/15 21:46:43 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 16:16:58 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,36 @@ static t_cmd	*parse_line(char *line, t_var *env)
 	}
 	free_split(pipe_segments);
 	return (head);
+}
+
+void	free_string_array(char **array)
+{
+	int i;
+
+	if (!array)
+		return;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
+void	free_commands(t_cmd *commands)
+{
+	t_cmd	*current_node;
+	t_cmd	*next_node;
+
+	current_node = commands;
+	while (current_node)
+	{
+		next_node = current_node->next;
+		free_string_array(current_node->cmd);
+		free(current_node);
+		current_node = next_node;
+	}
 }
 // fin du fake parsing
 

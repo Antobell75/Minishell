@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 14:06:49 by sle-bail          #+#    #+#             */
-/*   Updated: 2025/10/15 17:57:53 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 16:11:21 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ t_cmd	*cmd_new(char **argv, int *infile_fd, int outfile_fd);
 
 /* EXECUTION */
 int		execute_pipeline(t_cmd *cmd_list, t_var **env_list, int last_status);
-int		run_single_cmd(t_cmd *cmd, t_var **env_list, int last_status);
 
 /* PROCESS MANAGEMENT */
 void		exec_external_cmd(t_cmd *cmd, t_var **env_list);
@@ -78,7 +77,7 @@ int		exec_builtin(t_cmd *cmd, t_var **env_list, int last_status);
 int		ft_cd(t_cmd *cmd, t_var **env_list);
 int		ft_echo(t_cmd *cmd);
 int		ft_env(t_var *env);
-int		ft_exit(t_cmd *cmd, int last_status);
+int		ft_exit(t_cmd *cmd, t_var **env, int last_status);
 int		ft_export(t_cmd *cmd, t_var **env_list);
 int		ft_pwd(void);
 int		ft_unset(t_cmd *cmd, t_var **env_list);
@@ -95,8 +94,9 @@ char	*get_env_value(char *name, t_var *env_list);
 char	*find_cmd_path(char *cmd, t_var *env_list);
 
 /* UTILS & MEMORY */
+void	free_exit(t_cmd *cmd, t_var **env, int last_status);
 void	free_split(char **tab);
-void	*free_env(t_var *env);
+void	free_env(t_var *env);
 void	cmd_free(t_cmd *c);
 void	free_cmd_list(t_cmd *list);
 int		ft_strcmp(const char *s1, const char *s2);

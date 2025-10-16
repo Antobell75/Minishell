@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:17:22 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 17:27:38 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 16:11:08 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ static void	exit_error(char *arg, char *msg)
 	ft_putstr_fd(msg, 2);
 }
 
-int	ft_exit(t_cmd *cmd, int last_status)
+int	ft_exit(t_cmd *cmd, t_var **env, int last_status)
 {
 	printf("exit\n");
 	if (!cmd->cmd[1])
-		exit(last_status);
+		free_exit(cmd, env, last_status);
 	if (!is_numeric_str(cmd->cmd[1]))
 	{
 		exit_error(cmd->cmd[1], ": numeric argument required\n");

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:55:45 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 17:35:16 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 15:36:13 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static int	dispatch_builtin(t_cmd *cmd, t_var **env_list, int last_status)
 	if (ft_strcmp(name, "unset") == 0)
 		return (ft_unset(cmd, env_list));
 	if (ft_strcmp(name, "exit") == 0)
-		return (ft_exit(cmd, last_status));
+		return (ft_exit(cmd, env_list, last_status));
 	return (127);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:55:48 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 16:45:13 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 14:07:08 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,23 +77,6 @@ char	*get_env_value(char *name, t_var *env_list)
 		if (ft_strcmp(env_list->name, name) == 0)
 			return (env_list->value);
 		env_list = env_list->next;
-	}
-	return (NULL);
-}
-
-void	*free_env(t_var *env)
-{
-	t_var	*current;
-	t_var	*next_node;
-
-	current = env;
-	while (current)
-	{
-		next_node = current->next;
-		free(current->name);
-		free(current->value);
-		free(current);
-		current = next_node;
 	}
 	return (NULL);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:56:24 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 17:03:15 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/10/16 16:12:09 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,4 +46,29 @@ void	free_cmd_list(t_cmd *list)
 		cmd_free(current);
 		current = next_node;
 	}
+}
+
+void	free_env(t_var *env)
+{
+	t_var	*current;
+	t_var	*next_node;
+
+	current = env;
+	while (current)
+	{
+		next_node = current->next;
+		free(current->name);
+		free(current->value);
+		free(current);
+		current = next_node;
+	}
+}
+
+void	free_exit(t_cmd *cmd, t_var **env, int last_status)
+{
+	if (env)
+		free_env(*env);
+	if (cmd)
+		free_cmd_list(cmd);
+	exit(last_status);
 }
