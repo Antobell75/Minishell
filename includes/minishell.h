@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 14:06:49 by sle-bail          #+#    #+#             */
-/*   Updated: 2025/10/16 16:11:21 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/10/17 19:31:59 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_cmd	*cmd_new(char **argv, int *infile_fd, int outfile_fd);
 int		execute_pipeline(t_cmd *cmd_list, t_var **env_list, int last_status);
 
 /* PROCESS MANAGEMENT */
-void		exec_external_cmd(t_cmd *cmd, t_var **env_list);
+void	exec_external_cmd(t_cmd *cmd, t_var **env_list);
 
 /* BUILTINS */
 int		is_builtin(char *cmd_name);
