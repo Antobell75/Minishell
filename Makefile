@@ -41,8 +41,13 @@ SRC = \
 	exec/execv/redirect.c \
 	exec/execv/utils.c \
 	exec/parsing/cmd_builder.c \
+	exec/parsing/tokenize.c \
+	exec/parsing/lexer.c \
+	exec/parsing/utiles_parce.c \
+	exec/parsing/parcer.c \
+	exec/parsing/clean.c \
 	exec/utils/error.c \
-	exec/utils/free.c 
+	exec/utils/free.c
 
 SRC := $(addprefix $(SRCDIR)/,$(SRC))
 OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)

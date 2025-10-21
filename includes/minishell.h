@@ -26,6 +26,7 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "libft.h"
+# include <stdbool.h>
 
 # define WORD 0
 # define REDIR_IN 1			// <
@@ -48,6 +49,7 @@ typedef struct s_redirect
 	int		is_heredoc;
 	char	*files;
 	char	*eof;
+	struct s_redirect *next;
 }	t_redirect;
 
 typedef struct s_cmd
@@ -61,15 +63,42 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }	t_cmd;
 
+typedef struct s_token
+{
+	char			*value;
+	int				type;
+	struct s_token	*next;
+}	t_token;
+
+typedef struct s_tok_list
+{
+	t_token	*head;
+	t_token	*tail;
+}	t_tok_list;
+
 /* PARSING & SETUP */
 t_cmd	*cmd_new(char **argv, int *infile_fd, int outfile_fd);
-// Ajoute ici tes autres prototypes de parsing...
+int		get_token_len(char *str);
+int		check_quote(char *str);
+int		is_whitespace(char c);
+int		is_special(char c);
+void	free_token_list(t_token *head);
+char	*extract_quoted(char *str, int len);
+t_token	*tokenize_line(char *line);
+t_cmd	*parcing(t_token *head);
+int		assign_type(char *str);
+void	add_arg(t_cmd *new_cmd, char *value);
+void	add_redirect(t_cmd *new_cmd, t_token *cur);
+t_cmd	*init_cmd(void);
+void	add_cmd_to_list(t_cmd **cmd, t_cmd **tmp, t_cmd *new_cmd);
+bool	add_token_to_list(char *value, int type, t_tok_list *list);
+t_token	*create_token(char *value, int type);
 
 /* EXECUTION */
 int		execute_pipeline(t_cmd *cmd_list, t_var **env_list, int last_status);
 
 /* PROCESS MANAGEMENT */
-void		exec_external_cmd(t_cmd *cmd, t_var **env_list);
+void	exec_external_cmd(t_cmd *cmd, t_var **env_list);
 
 /* BUILTINS */
 int		is_builtin(char *cmd_name);
@@ -101,5 +130,8 @@ void	cmd_free(t_cmd *c);
 void	free_cmd_list(t_cmd *list);
 int		ft_strcmp(const char *s1, const char *s2);
 int		err_msg(const char *pfx, const char *msg, int code);
+void	free_string_array(char **array);
+void	free_and_null(t_tok_list *list);
+
 
 #endif
