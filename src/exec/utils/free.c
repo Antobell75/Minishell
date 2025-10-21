@@ -12,6 +12,21 @@
 
 #include "minishell.h"
 
+void	free_string_array(char **array)
+{
+	int	i;
+
+	if (!array)
+		return ;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
 void	cmd_free(t_cmd *c)
 {
 	int	i;
