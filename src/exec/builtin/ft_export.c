@@ -3,25 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/16 16:17:04 by anbellar          #+#    #+#             */
-/*   Updated: 2025/10/15 16:09:16 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/11/21 01:40:09 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-static t_var	*find_var(t_var *env, char *name)
-{
-	while (env)
-	{
-		if (ft_strcmp(env->name, name) == 0)
-			return (env);
-		env = env->next;
-	}
-	return (NULL);
-}
 
 static void	add_var_to_env(t_var **env_list, char *name, char *value)
 {
@@ -30,11 +19,7 @@ static void	add_var_to_env(t_var **env_list, char *name, char *value)
 
 	new_var = malloc(sizeof(t_var));
 	if (!new_var)
-	{
-		free(name);
-		free(value);
-		return ;
-	}
+		return (free(name), free(value));
 	new_var->name = name;
 	new_var->value = value;
 	new_var->next = NULL;
@@ -51,33 +36,35 @@ static void	add_var_to_env(t_var **env_list, char *name, char *value)
 	new_var->prev = current;
 }
 
-static void	handle_export_arg(char *arg, t_var **env_list)
+static int	update_or_add_var(t_var **env, char *name, char *value)
 {
-	char	*name;
-	char	*value;
-	char	*equal_pos;
-	t_var	*existing_var;
+	t_var	*existing;
 
-	equal_pos = ft_strchr(arg, '=');
-	if (!equal_pos)
-		name = ft_strdup(arg);
-	else
-		name = ft_strndup(arg, equal_pos - arg);
-	value = NULL;
-	if (equal_pos)
-		value = ft_strdup(equal_pos + 1);
-	existing_var = find_var(*env_list, name);
-	if (existing_var)
+	existing = find_var(*env, name);
+	if (existing)
 	{
 		free(name);
 		if (value)
 		{
-			free(existing_var->value);
-			existing_var->value = value;
+			free(existing->value);
+			existing->value = value;
 		}
+		return (0);
 	}
-	else
-		add_var_to_env(env_list, name, value);
+	add_var_to_env(env, name, value);
+	return (0);
+}
+
+static int	handle_export_arg(char *arg, t_var **env_list)
+{
+	char	*name;
+	char	*value;
+
+	if (parse_export_arg(arg, &name, &value))
+		return (1);
+	if (valid_name(name))
+		return (err_export(arg), free(name), free(value), 1);
+	return (update_or_add_var(env_list, name, value));
 }
 
 static int	print_export(t_var *env)
@@ -96,14 +83,23 @@ static int	print_export(t_var *env)
 int	ft_export(t_cmd *cmd, t_var **env_list)
 {
 	int	i;
+	int	error;
+	int	end_opt;
+	int	ret;
 
 	if (!cmd->cmd[1])
 		return (print_export(*env_list));
 	i = 1;
+	error = 0;
+	end_opt = 0;
 	while (cmd->cmd[i])
 	{
-		handle_export_arg(cmd->cmd[i], env_list);
+		ret = check_option(cmd->cmd[i], &end_opt);
+		if (ret == 2)
+			return (2);
+		if (ret == 0 && handle_export_arg(cmd->cmd[i], env_list))
+			error = 1;
 		i++;
 	}
-	return (0);
+	return (error);
 }

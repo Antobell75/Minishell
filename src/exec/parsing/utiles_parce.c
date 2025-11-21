@@ -1,95 +1,114 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utiles_parce.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/15 16:58:31 by dwsasd            #+#    #+#             */
+/*   Updated: 2025/11/21 01:13:45 by anbellar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-char *remove_quotes(char *str)
+static int	should_skip(char *src, int *i, char *quote)
 {
-    int     len;
-    char    *new_str;
-    char    quote_char;
-    int     i;
-
-    if (!str)
-        return (NULL);
-    len = ft_strlen(str);
-    quote_char = str[0];
-
-    if (len >= 2 && (quote_char == '\"' || quote_char == '\'') && quote_char == str[len - 1])
-    {
-        new_str = (char *)malloc(sizeof(char) * (len - 1));
-        if (!new_str)
-            return (NULL);
-        i = 0;
-        while (i < len - 2)
-        {
-            new_str[i] = str[i + 1];
-            i++;
-        }
-        new_str[i] = '\0';
-        return (new_str);
-    }
-    return (ft_strdup(str));
+	if (src[*i] == '$' && !*quote && src[*i + 1] == '\'')
+	{
+		*quote = '\'';
+		(*i)++;
+		return (1);
+	}
+	if ((src[*i] == '\'' || src[*i] == '"') && !*quote)
+	{
+		*quote = src[*i];
+		return (1);
+	}
+	if (src[*i] == *quote)
+	{
+		*quote = 0;
+		return (1);
+	}
+	return (0);
 }
 
-
-
-static char	**realloc_args(char **cmd, char *value)
+int	remove_quotes_process(char *src, char *dst)
 {
-	char	**new_arr;
 	int		i;
+	int		j;
+	char	quote;
 
 	i = 0;
-	while (cmd && cmd[i])
+	j = 0;
+	quote = 0;
+	while (src[i])
+	{
+		if (!should_skip(src, &i, &quote))
+		{
+			if (dst)
+				dst[j++] = src[i];
+			else
+				j++;
+		}
 		i++;
-	new_arr = malloc(sizeof(char *) * (i + 2));
-	if (!new_arr)
+	}
+	if (dst)
+		dst[j] = '\0';
+	return (j);
+}
+
+char	*remove_quotes(char *str)
+{
+	int		len;
+	char	*res;
+
+	if (!str)
 		return (NULL);
+	len = remove_quotes_process(str, NULL);
+	res = malloc(len + 1);
+	if (!res)
+		return (NULL);
+	remove_quotes_process(str, res);
+	return (res);
+}
+
+int	get_token_len(char *s)
+{
+	int		i;
+	int		qlen;
+
 	i = 0;
-	while (cmd && cmd[i])
+	if (s[0] == '|' || s[0] == '<' || s[0] == '>')
 	{
-		new_arr[i] = cmd[i];
-		i++;
+		if ((s[0] == '<' && s[1] == '<') || (s[0] == '>' && s[1] == '>')
+			|| (s[0] == '<' && s[1] == '>'))
+			return (2);
+		return (1);
 	}
-	new_arr[i] = ft_strdup(value);
-	if (!new_arr[i])
+	while (s[i] && !is_whitespace(s[i]) && !is_special(s[i]))
 	{
-		free(new_arr);
+		if (s[i] == '"' || s[i] == '\'')
+		{
+			qlen = check_quote(&s[i]);
+			if (qlen < 0)
+				return (-1);
+			i += qlen;
+		}
+		else
+			i++;
+	}
+	return (i);
+}
+
+char	*ft_chrdup(char c)
+{
+	char	*s;
+
+	s = malloc(2);
+	if (!s)
 		return (NULL);
-	}
-	new_arr[i + 1] = NULL;
-	return (new_arr);
+	s[0] = c;
+	s[1] = 0;
+	return (s);
 }
-
-
-char	*ft_expand(char *str, t_var *env, int status)
-{
-	char	*expanded;
-
-	if (!str || str[0] != '$')
-		return (ft_strdup(str));
-	if (str[1] == '?')
-	{
-		expanded = ft_itoa(status); 
-		return (expanded);
-	}
-	while (env && ft_strcmp(env->name, str + 1) != 0)
-		env = env->next;
-	return (ft_strdup(env ? env->value : ""));
-}
-
-void	add_arg(t_cmd *new_cmd, char *value)
-{
-	char	**old;
-
-	if (!new_cmd || !value)
-		return ;
-	old = new_cmd->cmd;
-	new_cmd->cmd = realloc_args(new_cmd->cmd, value);
-	if (!new_cmd->cmd)
-	{
-		new_cmd->cmd = old;
-		return ;
-	}
-	if (old)
-		free(old);
-}
-
-

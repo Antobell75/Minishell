@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:17:22 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/11/04 21:42:28 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/11/21 01:13:39 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,27 +38,59 @@ static void	exit_error(char *arg, char *msg)
 	ft_putstr_fd(msg, 2);
 }
 
+static int	check_overflow(char *str)
+{
+	unsigned long long	res;
+	int					sign;
+	int					i;
+
+	i = 0;
+	res = 0;
+	sign = 1;
+	while (str[i] == ' ' || (str[i] >= 9 && str[i] <= 13))
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (str[i])
+	{
+		if (res > 922337203685477580ULL || (res == 922337203685477580ULL
+				&& ((sign == 1 && str[i] - '0' > 7)
+					|| (sign == -1 && str[i] - '0' > 8))))
+			return (1);
+		res = res * 10 + (str[i] - '0');
+		i++;
+	}
+	return (0);
+}
+
 int	ft_exit(t_cmd *cmd, t_var **env, int last_status)
 {
-	int fd_tty;
-	
+	int	fd_tty;
+	int	i;
+
 	fd_tty = open("/dev/tty", O_RDWR);
 	if (fd_tty)
 	{
-		write(fd_tty, "exit\n", 5);
+		ft_fprintf(fd_tty, "exit\n");
 		close(fd_tty);
 	}
 	if (!cmd->cmd[1])
 		free_exit(cmd, env, last_status);
-	if (!is_numeric_str(cmd->cmd[1]))
+	if (!is_numeric_str(cmd->cmd[1]) || check_overflow(cmd->cmd[1]))
 	{
 		exit_error(cmd->cmd[1], ": numeric argument required\n");
-		exit(2);
+		free_exit(cmd, env, 2);
 	}
 	if (cmd->cmd[2])
 	{
 		exit_error(NULL, "too many arguments\n");
-		exit(1);
+		free_exit(cmd, env, 1);
 	}
-	exit(ft_atoi(cmd->cmd[1]) % 256);
+	i = ft_atoi(cmd->cmd[1]) % 256;
+	free_exit(cmd, env, i);
+	return (i);
 }

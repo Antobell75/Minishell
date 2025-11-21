@@ -3,40 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 17:32:12 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 17:32:14 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/11/17 23:26:44 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	check_n_option(char **argv, int *start_index)
+static int	valid_flag(char *arg)
+{
+	int	j;
+
+	if (arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	j = 2;
+	while (arg[j] == 'n')
+		j++;
+	return (arg[j] == '\0');
+}
+
+static int	check_n(char **argv, int *start_index)
 {
 	int	i;
-	int	j;
 	int	is_option;
 
 	is_option = 0;
 	i = 1;
-	while (argv[i])
+	while (argv[i] && valid_flag(argv[i]))
 	{
-		if (argv[i][0] == '-' && argv[i][1] == 'n')
-		{
-			j = 2;
-			while (argv[i][j] == 'n')
-				j++;
-			if (argv[i][j] == '\0')
-			{
-				is_option = 1;
-				*start_index = i + 1;
-			}
-			else
-				break ;
-		}
-		else
-			break ;
+		is_option = 1;
+		*start_index = i + 1;
 		i++;
 	}
 	return (is_option);
@@ -51,17 +49,17 @@ int	ft_echo(t_cmd *cmd)
 	newline = 1;
 	if (cmd->cmd[1])
 	{
-		if (check_n_option(cmd->cmd, &i))
+		if (check_n(cmd->cmd, &i))
 			newline = 0;
 		while (cmd->cmd[i])
 		{
-			printf("%s", cmd->cmd[i]);
+			write(1, cmd->cmd[i], ft_strlen(cmd->cmd[i]));
 			if (cmd->cmd[i + 1])
-				printf(" ");
+				write(1, " ", 1);
 			i++;
 		}
 	}
 	if (newline)
-		printf("\n");
+		write(1, "\n", 1);
 	return (0);
 }

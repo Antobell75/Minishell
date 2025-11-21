@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:56:24 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/16 16:12:09 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/11/20 20:30:17 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ void	cmd_free(t_cmd *c)
 		return ;
 	if (c->cmd)
 		free_split(c->cmd);
-
 	redir = c->redirect;
 	while (redir)
 	{
@@ -48,12 +47,10 @@ void	cmd_free(t_cmd *c)
 		free(redir);
 		redir = next_redir;
 	}
-
 	if (c->infile)
 		free(c->infile);
 	free(c);
 }
-
 
 void	free_cmd_list(t_cmd *list)
 {
@@ -87,9 +84,17 @@ void	free_env(t_var *env)
 
 void	free_exit(t_cmd *cmd, t_var **env, int last_status)
 {
+	int	fd;
+
 	if (env)
 		free_env(*env);
 	if (cmd)
 		free_cmd_list(cmd);
+	fd = 3;
+	while (fd < 1024)
+	{
+		close(fd);
+		fd++;
+	}
 	exit(last_status);
 }

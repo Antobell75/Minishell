@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:55:45 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/16 15:36:13 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/11/21 02:15:35 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,25 @@ int	is_builtin(char *cmd_name)
 	if (ft_strcmp(cmd_name, "echo") == 0 || ft_strcmp(cmd_name, "cd") == 0
 		|| ft_strcmp(cmd_name, "pwd") == 0 || ft_strcmp(cmd_name, "export") == 0
 		|| ft_strcmp(cmd_name, "unset") == 0 || ft_strcmp(cmd_name, "env") == 0
-		|| ft_strcmp(cmd_name, "exit") == 0)
+		|| ft_strcmp(cmd_name, "exit") == 0
+		|| dol_emp(cmd_name) == 0 || ft_strcmp(cmd_name, ":") == 0)
 		return (1);
 	return (0);
 }
 
-static int	dispatch_builtin(t_cmd *cmd, t_var **env_list, int last_status)
+int	dispatch_builtin(t_cmd *cmd, t_var **env_list, int last_status)
 {
 	char	*name;
 
 	name = cmd->cmd[0];
+	if (ft_strcmp(name, ":") == 0)
+		return (0);
+	if (dol_emp(name) == 0)
+		return (0);
 	if (ft_strcmp(name, "echo") == 0)
 		return (ft_echo(cmd));
 	if (ft_strcmp(name, "pwd") == 0)
-		return (ft_pwd());
+		return (ft_pwd(cmd));
 	if (ft_strcmp(name, "env") == 0)
 		return (ft_env(*env_list));
 	if (ft_strcmp(name, "export") == 0)

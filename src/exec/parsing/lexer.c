@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   lexer.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/15 16:58:31 by dwsasd            #+#    #+#             */
+/*   Updated: 2025/11/21 01:56:02 by anbellar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_whitespace(char c)
@@ -16,6 +28,16 @@ int	check_quote(char *str)
 	char	quote;
 
 	i = 0;
+	if (str[i] == '$' && (str[i + 1] == '"' || str[i + 1] == '\''))
+	{
+		quote = str[i + 1];
+		i += 2;
+		while (str[i] && str[i] != quote)
+			i++;
+		if (str[i] == quote)
+			return (i + 1);
+		return (ft_fprintf(2, "syntax error: unclosed quote\n"), -1);
+	}
 	if (str[i] == '"' || str[i] == '\'')
 	{
 		quote = str[i];
@@ -24,56 +46,58 @@ int	check_quote(char *str)
 			i++;
 		if (str[i] == quote)
 			return (i + 1);
-		return (printf("syntax error: unclosed quote\n"), -1);
+		return (ft_fprintf(2, "syntax error: unclosed quote\n"), -1);
 	}
 	return (0);
 }
 
-int	get_token_len(char *str)
+static int	copy_quoted(char *res, int *j, char *str, int *i)
 {
-	int		i;
+	char	quote;
 
-	i = 0;
-	if (str[i] == '|')
-		return (1);
-	if (str[i] == '<')
+	if (str[*i] == '$' && (str[*i + 1] == '"' || str[*i + 1] == '\''))
 	{
-		if (str[i + 1] == '<')
-			return (2);
-		return (1);
+		res[(*j)++] = '$';
+		(*i)++;
 	}
-	if (str[i] == '>')
-	{
-		if (str[i + 1] == '>')
-			return (2);
-		return (1);
-	}
-	if (str[i] == '\"' || str[i] == '\'')
-		return (check_quote(str));
-	while (str[i] && !is_whitespace(str[i]) && !is_special(str[i]))
-		i++;
-	return (i);
+	quote = str[*i];
+	res[(*j)++] = quote;
+	(*i)++;
+	while (str[*i] && str[*i] != quote)
+		res[(*j)++] = str[(*i)++];
+	if (!str[*i])
+		return (0);
+	res[(*j)++] = quote;
+	(*i)++;
+	return (1);
 }
 
 char	*extract_quoted(char *str, int len)
 {
-	char	*result;
+	char	*res;
 	int		i;
+	int		j;
 
-	if (str[0] != '\"' && str[0] != '\'')
-		return (ft_substr(str, 0, len));
-	result = malloc(sizeof(char) * (len - 1));
-	if (!result)
+	if (!str || len <= 0)
 		return (NULL);
-	i = 1;
-	while (i < len - 2)
+	res = malloc(len + 1);
+	if (!res)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (i < len)
 	{
-		result[i] = str[i + 1];
-		i++;
+		if ((str[i] == '$' && (str[i + 1] == '"' || str[i + 1] == '\''))
+			|| str[i] == '"' || str[i] == '\'')
+		{
+			if (!copy_quoted(res, &j, str, &i))
+				return (free(res), ft_fprintf(2, "syntax error: \
+				unclosed quote\n"), NULL);
+		}
+		else if (i < len && str[i] != '\0'
+			&& !(str[i] == '"' || str[i] == '\''))
+			res[j++] = str[i++];
 	}
-	result[i] = '\0';
-	return (result);
+	res[j] = '\0';
+	return (res);
 }
-
-
-

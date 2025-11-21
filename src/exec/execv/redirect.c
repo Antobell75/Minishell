@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:54:47 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 16:04:09 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/11/21 01:36:04 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ static int	handle_output(t_redirect *redir)
 		flags = O_WRONLY | O_CREAT | O_TRUNC;
 	fd = open(redir->files, flags, 0644);
 	if (fd < 0)
-		return (perror(redir->files), 1);
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(redir->files);
+		return (1);
+	}
 	dup2(fd, STDOUT_FILENO);
 	close(fd);
 	return (0);
@@ -45,7 +49,11 @@ static int	handle_input(t_cmd *cmd, t_redirect *redir)
 	}
 	fd = open(redir->files, O_RDONLY);
 	if (fd < 0)
-		return (perror(redir->files), 1);
+	{
+		ft_putstr_fd("minishell: ", 2);
+		perror(redir->files);
+		return (1);
+	}
 	dup2(fd, STDIN_FILENO);
 	close(fd);
 	return (0);

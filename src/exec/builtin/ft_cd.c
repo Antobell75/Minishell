@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:16:02 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/11/04 23:39:34 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/11/14 00:42:48 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ static char	*get_target_path(t_cmd *cmd, t_var *env)
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		return (NULL);
 	}
-	if (!cmd->cmd[1]) // 'cd' seul
+	if (!cmd->cmd[1] || ft_strcmp(cmd->cmd[1], "~") == 0)
 	{
 		path = get_env_value("HOME", env);
 		if (!path)
 			ft_putstr_fd("minishell: cd: HOME not set\n", 2);
 		return (path);
 	}
-	if (ft_strcmp(cmd->cmd[1], "-") == 0) // 'cd -'
+	if (ft_strcmp(cmd->cmd[1], "-") == 0)
 	{
 		path = get_env_value("OLDPWD", env);
 		if (!path)

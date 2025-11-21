@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/17 14:33:13 by anbellar          #+#    #+#             */
-/*   Updated: 2025/10/16 15:39:01 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/11/21 02:43:00 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,46 @@ t_var	*new_var(char *envp_line)
 	return (new);
 }
 
+static t_var	*create_uid_node(void)
+{
+	t_var	*new;
+	char	*uid_str;
+
+	uid_str = ft_itoa(getuid());
+	if (!uid_str)
+		return (NULL);
+	new = ft_calloc(1, sizeof(t_var));
+	if (!new)
+		return (free(uid_str), NULL);
+	new->name = ft_strdup("UID");
+	new->value = uid_str;
+	if (!new->name)
+		return (free(uid_str), free(new), NULL);
+	return (new);
+}
+
+static void	add_uid_to_env(t_var *env)
+{
+	t_var	*curr;
+	t_var	*new;
+
+	curr = env;
+	while (curr)
+	{
+		if (ft_strcmp(curr->name, "UID") == 0)
+			return ;
+		if (!curr->next)
+			break ;
+		curr = curr->next;
+	}
+	new = create_uid_node();
+	if (new && curr)
+	{
+		curr->next = new;
+		new->prev = curr;
+	}
+}
+
 t_var	*create_env(char **envp)
 {
 	t_var	*head;
@@ -66,5 +106,6 @@ t_var	*create_env(char **envp)
 		current = current->next;
 		i++;
 	}
+	add_uid_to_env(head);
 	return (head);
 }

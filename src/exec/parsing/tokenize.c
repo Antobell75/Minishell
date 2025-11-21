@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cmd_builder.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/10/15 16:58:31 by dwsasd            #+#    #+#             */
+/*   Updated: 2025/10/15 16:58:32 by dwsasd           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 t_token	*create_token(char *value, int type)
@@ -41,6 +53,8 @@ int	assign_type(char *str)
 		return (WORD);
 	if (str[0] == '|')
 		return (PIPE);
+	if (str[0] == '<' && str[1] == '>')
+		return (REDIR_RDWR);
 	if (str[0] == '>' && str[1] == '>')
 		return (REDIR_APPEND);
 	if (str[0] == '>')
@@ -51,7 +65,6 @@ int	assign_type(char *str)
 		return (REDIR_IN);
 	return (WORD);
 }
-
 
 static bool	process_token(char **ptr, t_tok_list *list)
 {

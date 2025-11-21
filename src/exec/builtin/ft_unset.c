@@ -6,7 +6,7 @@
 /*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 16:18:21 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/11/04 21:45:37 by anbellar         ###   ########.fr       */
+/*   Updated: 2025/11/21 02:36:14 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,13 @@ int	ft_unset(t_cmd *cmd, t_var **env_list)
 	i = 1;
 	while (cmd->cmd[i])
 	{
+		if (cmd->cmd[i][0] == '-' && cmd->cmd[i][1])
+		{
+			ft_putstr_fd("minishell: unset: ", 2);
+			ft_putstr_fd(cmd->cmd[i], 2);
+			ft_putstr_fd(": invalid option\n", 2);
+			return (2);
+		}
 		find_and_remove_var(cmd->cmd[i], env_list);
 		i++;
 	}

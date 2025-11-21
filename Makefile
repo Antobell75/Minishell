@@ -6,7 +6,7 @@
 #    By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/09/01 13:59:21 by sle-bail          #+#    #+#              #
-#    Updated: 2025/11/04 19:13:40 by anbellar         ###   ########.fr        #
+#    Updated: 2025/11/20 23:55:24 by anbellar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,12 +31,16 @@ SRC = \
 	exec/builtin/ft_env.c \
 	exec/builtin/ft_exit.c \
 	exec/builtin/ft_export.c \
+	exec/builtin/ft_export_utils.c \
+	exec/builtin/ft_export_utils2.c \
 	exec/builtin/ft_pwd.c \
 	exec/builtin/ft_unset.c \
 	exec/execv/builtins.c \
 	exec/execv/env.c \
 	exec/execv/heredoc.c \
+	exec/execv/heredoc_utils.c \
 	exec/execv/mainexec.c \
+	exec/execv/mainexec_utils.c \
 	exec/execv/path.c \
 	exec/execv/process.c \
 	exec/execv/redirect.c \
@@ -44,8 +48,11 @@ SRC = \
 	exec/parsing/cmd_builder.c \
 	exec/parsing/tokenize.c \
 	exec/parsing/lexer.c \
+	exec/parsing/utiles_lexpars.c \
 	exec/parsing/utiles_parce.c \
+	exec/parsing/ft_expand.c \
 	exec/parsing/parcer.c \
+	exec/parsing/parcer_utils.c \
 	exec/parsing/clean.c \
 	exec/parsing/utiles_redir.c \
 	exec/utils/error.c \
@@ -56,7 +63,7 @@ SRC := $(addprefix $(SRCDIR)/,$(SRC))
 OBJ := $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 DEP := $(OBJ:.o=.d)
 
-all: $(NAME)
+all: $(NAME) finish
 
 $(NAME): $(OBJ) $(LIBFT)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) $(LIBS) -o $(NAME)
@@ -75,13 +82,27 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 
 clean:
 	rm -rf $(OBJDIR)
-	$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) --no-print-directory -C $(LIBFT_DIR) clean
+	@printf 'coucou\n';
 
 fclean: clean
 	rm -f $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
-re: fclean all
+re: 
+	@$(MAKE) fclean
+	@$(MAKE) all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re finish
 .DEFAULT_GOAL := all
+
+finish:
+# 	@clear
+	@printf '\033[1;37m'
+	@printf '\n  __  __ _       _     _          _ _ \n'
+	@printf ' |  \/  (_)     (_)   | |        | | |\n'
+	@printf ' | \  / |_ _ __  _ ___| |__   ___| | |\n'
+	@printf ' | |\/| | | |_ \| / __| |_ \ / _ \ | |\n'
+	@printf ' | |  | | | | | | \__ \ | | |  __/ | |\n'
+	@printf ' |_|  |_|_|_| |_|_|___/_| |_|\___|_|_|\n'
+	@printf '\033[0m'

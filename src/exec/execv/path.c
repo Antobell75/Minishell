@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   path.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 15:55:24 by dwsasd            #+#    #+#             */
-/*   Updated: 2025/10/15 16:48:07 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/11/20 19:47:04 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,12 @@ char	*find_cmd_path(char *cmd, t_var *env_list)
 
 	if (!cmd || cmd[0] == '\0')
 		return (NULL);
-	if (ft_strchr(cmd, '/') && access(cmd, F_OK) == 0)
-		return (ft_strdup(cmd));
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, F_OK) == 0)
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
 	path_value = get_env_value("PATH", env_list);
 	if (!path_value)
 		return (NULL);

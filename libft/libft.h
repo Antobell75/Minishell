@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: dwsasd <dwsasd@student.42.fr>              +#+  +:+       +#+        */
+/*   By: anbellar <anbellar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/09 19:23:25 by sle-bail          #+#    #+#             */
-/*   Updated: 2025/10/15 17:38:26 by dwsasd           ###   ########.fr       */
+/*   Updated: 2025/11/20 20:31:58 by anbellar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <stdlib.h>
 # include <string.h>
 # include <unistd.h>
+# include <stdarg.h>
+# include <stdint.h>
 
 typedef struct s_list
 {
@@ -26,6 +28,34 @@ typedef struct s_list
 
 }					t_list;
 
+// PRINTF
+
+typedef struct s_print
+{
+	va_list			args;
+	const char		*format;
+	int				di;
+	unsigned int	lowerx;
+	unsigned int	upperx;
+	unsigned int	u;
+	void			*ptr;
+	int				count;
+	int				check;
+	int				i;
+	int				fd;
+}	t_print;
+
+int					ft_pourcent(const char *str, va_list args, t_print *fptf);
+int					ft_fprintf(int fd, const char *format, ...);
+int					ft_putchar(char c, int fd);
+int					ft_putstr(char *str, int count, int fd);
+int					ft_printf_di(int n, int count, int fd);
+int					ft_printf_lowerx(unsigned int n, int count, int fd);
+int					ft_printf_upperx(unsigned int n, int count, int fd);
+int					ft_printf_u(unsigned int n, int count, int fd);
+int					ft_printf_p(void *ptr, int count, int check, int fd);
+
+// LIBFT
 int					ft_isalpha(int letter);
 int					ft_isdigit(int nb);
 int					ft_isalnum(int c);
